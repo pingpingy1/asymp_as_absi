@@ -3,7 +3,7 @@
 from typing import Literal
 from polynomials import IntFunc, Mono, Exp, Scl, Add, Sub, Mul, equals
 
-type Asymptotic = Literal["bottom", "top"] | tuple[float | Literal["coeff_top"], float]
+type Asymptotic = Literal["bottom", "top"] | tuple[float, float]
 
 
 def asymptotic(poly: IntFunc) -> Asymptotic:
@@ -19,16 +19,13 @@ def asymptotic(poly: IntFunc) -> Asymptotic:
             return "bottom"
 
         sub: Asymptotic = asymptotic(poly.f)
-        if sub in ["bottom", "top"]:
+        if sub in ("bottom", "top"):
             return sub
 
         assert isinstance(sub, tuple) and len(sub) == 2
-        if sub[0] == "coeff_top":
-            return sub
-
         return (sub[0] * poly.c, sub[1])
 
-    if isinstance(poly, Add) or isinstance(poly, Sub):
+    if isinstance(poly, (Add, Sub)):
         l: Asymptotic = asymptotic(poly.l)
         r: Asymptotic = asymptotic(poly.r)
         if l == "top" or r == "top":
@@ -46,8 +43,6 @@ def asymptotic(poly: IntFunc) -> Asymptotic:
         )
 
         if equals(l[1], r[1]):
-            if l[0] == "coeff_top" or r[0] == "coeff_top":
-                return ("coeff_top", l[1])
             return ((l[0] + r[0]) if isinstance(poly, Add) else (l[0] - r[0]), l[1])
         if l[1] > r[1]:
             return l
@@ -67,9 +62,6 @@ def asymptotic(poly: IntFunc) -> Asymptotic:
             and len(l_asymp) == 2
             and len(r_asymp) == 2
         )
-
-        if l_asymp[0] == "coeff_top" or r_asymp[0] == "coeff_top":
-            return ("coeff_top", l_asymp[1] + r_asymp[1])
         return (l_asymp[0] * r_asymp[0], l_asymp[1] + r_asymp[1])
 
     raise NotImplementedError(f"Unsupported polynomial type: {type(poly)}")
@@ -89,10 +81,6 @@ def asymptotic_eq(imp1: Asymptotic, imp2: Asymptotic) -> bool:
         and len(imp1) == 2
         and len(imp2) == 2
     )
-
-    if imp1[0] == "coeff_top" or imp2[0] == "coeff_top":
-        return imp1[0] == imp2[0] and equals(imp1[1], imp2[1])
-
     return equals(imp1[0], imp2[0]) and equals(imp1[1], imp2[1])
 
 

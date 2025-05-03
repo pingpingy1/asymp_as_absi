@@ -17,39 +17,45 @@ class IntFunc:
         """Evaluate the function at x."""
         raise NotImplementedError("Subclasses must implement this method.")
 
+    def str_as_sub(self) -> str:
+        """Return the string representation of the function as a subscript."""
+        if self.atomic:
+            return str(self)
+        return f"({self})"
+
 
 class Mono(IntFunc):
     atomic: bool = True
 
-    def __init__(self, r: float):
+    def __init__(self, r: float) -> None:
         self.r: float = r
 
     def eval(self, n: int) -> float:
         if equals(self.r, 0.0):
             return 1.0
-        return n**self.r
+        return float(n**self.r)
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         return f"n^({self.r})"
 
 
 class Exp(IntFunc):
     atomic: bool = True
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     def eval(self, n: int) -> float:
-        return 2**n
+        return float(2**n)
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         return "2^n"
 
 
 class Scl(IntFunc):
     atomic: bool = True
 
-    def __init__(self, c: float, f: IntFunc):
+    def __init__(self, c: float, f: IntFunc) -> None:
         self.c: float = c
         self.f: IntFunc = f
 
@@ -58,36 +64,36 @@ class Scl(IntFunc):
             return 0
         return self.c * self.f.eval(n)
 
-    def __repr__(self) -> str:
-        return f"{self.c} {self.f if self.f.atomic else f'({self.f})'}"
+    def __str__(self) -> str:
+        return f"{self.c} {self.f.str_as_sub()}"
 
 
 class Add(IntFunc):
     atomic: bool = False
 
-    def __init__(self, l: IntFunc, r: IntFunc):
+    def __init__(self, l: IntFunc, r: IntFunc) -> None:
         self.l: IntFunc = l
         self.r: IntFunc = r
 
     def eval(self, n: int) -> float:
         return self.l.eval(n) + self.r.eval(n)
 
-    def __repr__(self) -> str:
-        return f"{self.l if self.l.atomic else f'({self.l})'} + {self.r if self.r.atomic else f'({self.r})'}"
+    def __str__(self) -> str:
+        return f"{self.l.str_as_sub()} + {self.r.str_as_sub()}"
 
 
 class Sub(IntFunc):
     atomic: bool = False
 
-    def __init__(self, l: IntFunc, r: IntFunc):
+    def __init__(self, l: IntFunc, r: IntFunc) -> None:
         self.l: IntFunc = l
         self.r: IntFunc = r
 
     def eval(self, n: int) -> float:
         return self.l.eval(n) - self.r.eval(n)
 
-    def __repr__(self) -> str:
-        return f"{self.l if self.l.atomic else f'({self.l})'} - {self.r if self.r.atomic else f'({self.r})'}"
+    def __str__(self) -> str:
+        return f"{self.l.str_as_sub()} - {self.r.str_as_sub()}"
 
 
 class Mul(IntFunc):
@@ -100,8 +106,8 @@ class Mul(IntFunc):
     def eval(self, n: int) -> float:
         return self.l.eval(n) * self.r.eval(n)
 
-    def __repr__(self) -> str:
-        return f"{self.l if self.l.atomic else f'({self.l})'} * {self.r if self.r.atomic else f'({self.r})'}"
+    def __str__(self) -> str:
+        return f"{self.l.str_as_sub()} * {self.r.str_as_sub()}"
 
 
 def test() -> None:
@@ -111,15 +117,15 @@ def test() -> None:
     )
 
     def f_ans(n: int) -> float:
-        return (n**1.0 + 2.0 * n**0.0) * (0.5 * n**3.0 - n**2.0)
+        return float((n**1.0 + 2.0 * n**0.0) * (0.5 * n**3.0 - n**2.0))
 
     print(f"Function: {f_imp}")
 
     for n in range(10):
-        eval: float = f_imp.eval(n)
+        impl: float = f_imp.eval(n)
         ans: float = f_ans(n)
-        assert equals(eval, ans), f"Failed: {n} -> {eval} != {ans}"
-        print(f"Passed: {n} -> {eval}")
+        assert equals(impl, ans), f"Failed: {n} -> {impl} != {ans}"
+        print(f"Passed: {n} -> {impl}")
 
 
 if __name__ == "__main__":
