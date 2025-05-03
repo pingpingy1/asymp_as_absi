@@ -54,23 +54,23 @@ def asymptotic(poly: IntFunc) -> Asymptotic:
         return r
 
     if isinstance(poly, Mul):
-        l: Asymptotic = asymptotic(poly.l)
-        r: Asymptotic = asymptotic(poly.r)
-        if l == "bottom" or r == "bottom":
+        l_asymp: Asymptotic = asymptotic(poly.l)
+        r_asymp: Asymptotic = asymptotic(poly.r)
+        if l_asymp == "bottom" or r_asymp == "bottom":
             return "bottom"
-        if l == "top" or r == "top":
+        if l_asymp == "top" or r_asymp == "top":
             return "top"
 
         assert (
-            isinstance(l, tuple)
-            and isinstance(r, tuple)
-            and len(l) == 2
-            and len(r) == 2
+            isinstance(l_asymp, tuple)
+            and isinstance(r_asymp, tuple)
+            and len(l_asymp) == 2
+            and len(r_asymp) == 2
         )
 
-        if l[0] == "coeff_top" or r[0] == "coeff_top":
-            return ("coeff_top", l[1] + r[1])
-        return (l[0] * r[0], l[1] + r[1])
+        if l_asymp[0] == "coeff_top" or r_asymp[0] == "coeff_top":
+            return ("coeff_top", l_asymp[1] + r_asymp[1])
+        return (l_asymp[0] * r_asymp[0], l_asymp[1] + r_asymp[1])
 
     raise NotImplementedError(f"Unsupported polynomial type: {type(poly)}")
 
