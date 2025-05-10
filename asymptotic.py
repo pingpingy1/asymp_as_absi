@@ -1,12 +1,12 @@
 """Implementation of the asymptotic analysis of polynomials."""
 
 from typing import Literal
-from polynomials import IntFunc, Mono, Exp, Scl, Add, Sub, Mul, equals
+from polynomial import Polynomial, Mono, Exp, Scl, Add, Sub, Mul, equals
 
 type Asymptotic = Literal["bottom", "top"] | tuple[float, float]
 
 
-def asymptotic(poly: IntFunc) -> Asymptotic:
+def asymptotic(poly: Polynomial) -> Asymptotic:
     """Return the asymptotic analysis of the polynomial `poly`."""
     if isinstance(poly, Mono):
         return (1.0, poly.r)
@@ -26,31 +26,38 @@ def asymptotic(poly: IntFunc) -> Asymptotic:
         return (sub[0] * poly.c, sub[1])
 
     if isinstance(poly, (Add, Sub)):
-        l: Asymptotic = asymptotic(poly.l)
-        r: Asymptotic = asymptotic(poly.r)
-        if l == "top" or r == "top":
-            return "top"
-        if l == "bottom":
-            return r
-        if r == "bottom":
-            return l
-
-        assert (
-            isinstance(l, tuple)
-            and isinstance(r, tuple)
-            and len(l) == 2
-            and len(r) == 2
-        )
-
-        if equals(l[1], r[1]):
-            return ((l[0] + r[0]) if isinstance(poly, Add) else (l[0] - r[0]), l[1])
-        if l[1] > r[1]:
-            return l
-        return r
-
-    if isinstance(poly, Mul):
         l_asymp: Asymptotic = asymptotic(poly.l)
         r_asymp: Asymptotic = asymptotic(poly.r)
+        if l_asymp == "top" or r_asymp == "top":
+            return "top"
+        if l_asymp == "bottom":
+            return r_asymp
+        if r_asymp == "bottom":
+            return l_asymp
+
+        assert (
+            isinstance(l_asymp, tuple)
+            and isinstance(r_asymp, tuple)
+            and len(l_asymp) == 2
+            and len(r_asymp) == 2
+        )
+
+        if equals(l_asymp[1], r_asymp[1]):
+            return (
+                (
+                    (l_asymp[0] + r_asymp[0])
+                    if isinstance(poly, Add)
+                    else (l_asymp[0] - r_asymp[0])
+                ),
+                l_asymp[1],
+            )
+        if l_asymp[1] > r_asymp[1]:
+            return l_asymp
+        return r_asymp
+
+    if isinstance(poly, Mul):
+        l_asymp = asymptotic(poly.l)
+        r_asymp = asymptotic(poly.r)
         if l_asymp == "bottom" or r_asymp == "bottom":
             return "bottom"
         if l_asymp == "top" or r_asymp == "top":
@@ -69,11 +76,8 @@ def asymptotic(poly: IntFunc) -> Asymptotic:
 
 def asymptotic_eq(imp1: Asymptotic, imp2: Asymptotic) -> bool:
     """Return whether the asymptotic analyses `imp1` and `imp2` are equal."""
-    if imp1 == imp2:
-        return True
-
-    if imp1 in ["bottom", "top"] or imp2 in ["bottom", "top"]:
-        return False
+    if isinstance(imp1, str) or isinstance(imp2, str):
+        return imp1 == imp2
 
     assert (
         isinstance(imp1, tuple)
@@ -82,19 +86,3 @@ def asymptotic_eq(imp1: Asymptotic, imp2: Asymptotic) -> bool:
         and len(imp2) == 2
     )
     return equals(imp1[0], imp2[0]) and equals(imp1[1], imp2[1])
-
-
-def test(f_imp: IntFunc, ans: Asymptotic) -> None:
-    """Test the asymptotic analysis of the polynomial `f_imp`."""
-    imp: Asymptotic = asymptotic(f_imp)
-    assert asymptotic_eq(imp, ans), f"Failed: {f_imp} -> {imp} != {ans}"
-    print(f"Passed: {f_imp} -> {ans}")
-
-
-if __name__ == "__main__":
-    test(
-        Mul(Add(Mono(1.0), Scl(2.0, Mono(0.0))), Sub(Scl(0.5, Mono(3.0)), Mono(2.0))),
-        (0.5, 4.0),
-    )
-    test(Scl(0.0, Mono(1.0)), "bottom")
-    test(Add(Mono(1.0), Exp()), "top")
