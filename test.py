@@ -2,12 +2,12 @@
 
 import unittest
 from typing import Callable
-from polynomial import EPS, Polynomial, Mono, Exp, Scl, Add, Sub, Mul
+from expr import EPS, Expr, Mono, Exp, Scl, Add, Sub, Mul
 from asymptotic import asymptotic, Asymptotic, asymptotic_eq
 from poly_expanded import PolyExpanded
 
 
-class TestPolynomial(unittest.TestCase):
+class TestExpr(unittest.TestCase):
     """Unit tests for the polynomial representations."""
 
     def assert_func_equivalent(
@@ -30,10 +30,10 @@ class TestPolynomial(unittest.TestCase):
         self.assertTrue(asymptotic_eq(a1, a2), f"asymptotic({a1}) != asymptotic({a2})")
 
     def setUp(self) -> None:
-        # Polynomial 1:
+        # Expr 1:
         # (3n^1.2 + 2^n)*(5n^0.8 - 1) - n^2 - 2^n
         # = -3n^1.2 + 14n^2 + 5n^0.8 2^n
-        self.poly1: Polynomial = Add(
+        self.poly1: Expr = Add(
             Sub(
                 Mul(
                     Add(
@@ -53,10 +53,10 @@ class TestPolynomial(unittest.TestCase):
             -3.0 * n**1.2 + 14.0 * n**2.0 + 5.0 * n**0.8 * 2.0**n
         )
 
-        # Polynomial 2:
+        # Expr 2:
         # 0.0*(2^n + 3.5n^0.7) + (1.7n^4 + 0.2n^1.7)*(3.5n^0.8 - 1.1n^(-0.2))
         # = -0.22n^1.5 + 0.7n^2.5 - 1.87n^3.8 + 5.95n^4.8
-        self.poly2: Polynomial = Add(
+        self.poly2: Expr = Add(
             Scl(0.0, Add(Exp(), Scl(3.5, Mono(0.7)))),
             Mul(
                 Add(

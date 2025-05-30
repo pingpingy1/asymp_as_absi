@@ -8,13 +8,13 @@ def equals(x: float, y: float) -> bool:
     return abs(x - y) < EPS
 
 
-class Polynomial:
-    """General class for integer polynomials."""
+class Expr:
+    """General class for function expressions."""
 
     atomic: bool = False
 
     def eval(self, _: int) -> float:
-        """Evaluate the function at x."""
+        """Evaluate the expression at n."""
         raise NotImplementedError("Subclasses must implement this method.")
 
     def str_as_sub(self) -> str:
@@ -28,7 +28,7 @@ class Polynomial:
         raise NotImplementedError("Subclasses must implement this method.")
 
 
-class Mono(Polynomial):
+class Mono(Expr):
     """n^r for some real r."""
 
     atomic: bool = True
@@ -51,7 +51,7 @@ class Mono(Polynomial):
         return 1
 
 
-class Exp(Polynomial):
+class Exp(Expr):
     """2^n."""
 
     atomic: bool = True
@@ -72,14 +72,14 @@ class Exp(Polynomial):
         return 1
 
 
-class Scl(Polynomial):
+class Scl(Expr):
     """cf(n) for some real c."""
 
     atomic: bool = True
 
-    def __init__(self, c: float, f: Polynomial) -> None:
+    def __init__(self, c: float, f: Expr) -> None:
         self.c: float = c
-        self.f: Polynomial = f
+        self.f: Expr = f
 
     def eval(self, n: int) -> float:
         if equals(self.c, 0.0):
@@ -96,14 +96,14 @@ class Scl(Polynomial):
         return 1 + self.f.size()
 
 
-class Add(Polynomial):
+class Add(Expr):
     """f(n) + g(n)."""
 
     atomic: bool = False
 
-    def __init__(self, l: Polynomial, r: Polynomial) -> None:
-        self.l: Polynomial = l
-        self.r: Polynomial = r
+    def __init__(self, l: Expr, r: Expr) -> None:
+        self.l: Expr = l
+        self.r: Expr = r
 
     def eval(self, n: int) -> float:
         return self.l.eval(n) + self.r.eval(n)
@@ -118,14 +118,14 @@ class Add(Polynomial):
         return 1 + self.l.size() + self.r.size()
 
 
-class Sub(Polynomial):
+class Sub(Expr):
     """f(n) - g(n)."""
 
     atomic: bool = False
 
-    def __init__(self, l: Polynomial, r: Polynomial) -> None:
-        self.l: Polynomial = l
-        self.r: Polynomial = r
+    def __init__(self, l: Expr, r: Expr) -> None:
+        self.l: Expr = l
+        self.r: Expr = r
 
     def eval(self, n: int) -> float:
         return self.l.eval(n) - self.r.eval(n)
@@ -140,14 +140,14 @@ class Sub(Polynomial):
         return 1 + self.l.size() + self.r.size()
 
 
-class Mul(Polynomial):
+class Mul(Expr):
     """f(n) * g(n)."""
 
     atomic: bool = False
 
-    def __init__(self, l: Polynomial, r: Polynomial):
-        self.l: Polynomial = l
-        self.r: Polynomial = r
+    def __init__(self, l: Expr, r: Expr):
+        self.l: Expr = l
+        self.r: Expr = r
 
     def eval(self, n: int) -> float:
         return self.l.eval(n) * self.r.eval(n)

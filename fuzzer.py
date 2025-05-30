@@ -2,7 +2,7 @@
 
 import random
 import time
-from polynomial import equals, Polynomial, Mono, Exp, Scl, Add, Sub, Mul
+from expr import equals, Expr, Mono, Exp, Scl, Add, Sub, Mul
 from poly_expanded import TermPower, PolyExpanded
 from asymptotic import asymptotic, Asymptotic
 
@@ -24,7 +24,7 @@ def correct(expanded: list[tuple[TermPower, float]], asymp: Asymptotic) -> bool:
     return exp_t.deg_power < asymp_r
 
 
-def generate_poly(max_depth: int) -> Polynomial:
+def generate_poly(max_depth: int) -> Expr:
     """Generate a random polynomial with a maximum depth of `max_depth`."""
     poly_type: str
     if max_depth == 0:
@@ -82,7 +82,7 @@ def fuzz(n: int, max_depth: int, verbose: bool = False) -> None:
     expanded_time: float = 0.0
 
     while tot < n:
-        p: Polynomial = generate_poly(max_depth)
+        p: Expr = generate_poly(max_depth)
 
         asymp_start: float = time.perf_counter()
         a = asymptotic(p)

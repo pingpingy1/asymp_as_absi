@@ -1,12 +1,12 @@
 """Implementation of the asymptotic analysis of polynomials."""
 
 from typing import Literal
-from polynomial import Polynomial, Mono, Exp, Scl, Add, Sub, Mul, equals
+from expr import Expr, Mono, Exp, Scl, Add, Sub, Mul, equals
 
 type Asymptotic = Literal["bottom", "top"] | tuple[float, float]
 
 
-def asymptotic(poly: Polynomial) -> Asymptotic:
+def asymptotic(poly: Expr) -> Asymptotic:
     """Return the asymptotic analysis of the polynomial `poly`."""
     if isinstance(poly, Mono):
         return (1.0, poly.r)

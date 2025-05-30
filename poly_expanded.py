@@ -1,6 +1,6 @@
 """Expanded representation of polynomials"""
 
-from polynomial import Polynomial, Mono, Exp, Scl, Add, Sub, Mul, equals
+from expr import Expr, Mono, Exp, Scl, Add, Sub, Mul, equals
 
 
 class TermPower:
@@ -176,8 +176,8 @@ class PolyExpanded:
         return low
 
     @classmethod
-    def from_poly(cls, poly: Polynomial) -> "PolyExpanded":
-        """Create a PolyExpanded from a Polynomial."""
+    def from_poly(cls, poly: Expr) -> "PolyExpanded":
+        """Create a PolyExpanded from an Expr."""
         if isinstance(poly, Mono):
             return cls([(TermPower(0, poly.r), 1.0)])
         if isinstance(poly, Exp):
