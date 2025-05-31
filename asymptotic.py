@@ -53,7 +53,7 @@ def asymptotic(poly: Expr) -> Asymptotic:
             )
         if l_asymp[1] > r_asymp[1]:
             return l_asymp
-        return r_asymp
+        return r_asymp if isinstance(poly, Add) else (-r_asymp[0], r_asymp[1])
 
     if isinstance(poly, Mul):
         l_asymp = asymptotic(poly.l)
