@@ -148,6 +148,8 @@ class Parser:
             return expr
 
         c: str = self.parse_float()
+        if not self.curr:
+            return Scl(float(c), Mono(0.0))
         if self.curr[0] == TT_OP and self.curr[1] == "^":
             if c != "2":
                 raise ValueError(
@@ -163,7 +165,7 @@ class Parser:
         if self.curr[0] == TT_OP and self.curr[1] == "*":
             self.advance()
             return Scl(float(c), self.parse_factor())
-        raise ValueError(f"Unexpected token at {self.curr[2]}: {self.curr[1]}")
+        return Scl(float(c), Mono(0.0))
 
     def parse_float(self) -> str:
         """Parses a float, including negative signs."""
@@ -194,7 +196,3 @@ class Parser:
 def parse(expr: str) -> Expr:
     """Parses the given expression string into an Expr tree."""
     return Parser(Lexer(expr).tokenize()).parse()
-
-
-if __name__ == "__main__":
-    print(parse("3.0 * n"))

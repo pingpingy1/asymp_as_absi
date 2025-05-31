@@ -1,6 +1,7 @@
 """Definition of polynomials of real coefficients and exponents."""
 
-EPS: float = 1e-6
+DIGITS: int = 6
+EPS: float = 10 ** (-DIGITS)
 
 
 def equals(x: float, y: float) -> bool:

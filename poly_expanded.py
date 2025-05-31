@@ -1,5 +1,6 @@
 """Expanded representation of polynomials"""
 
+from math import inf
 from expr import Expr, Mono, Exp, Scl, Add, Sub, Mul, equals
 
 
@@ -45,6 +46,9 @@ class TermPower:
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}{self.powers}"
+
+
+ZERO_LEADING: tuple[TermPower, float] = (TermPower(0, -inf), 0.0)
 
 
 class PolyExpanded:
@@ -210,6 +214,12 @@ class PolyExpanded:
         return sum(
             float(c * (2 ** (t.exp_power * n)) * (n**t.deg_power)) for t, c in self.__coeff
         )
+
+    def leading_term(self) -> tuple[TermPower, float]:
+        """Get the leading term of the polynomial."""
+        if not self.__coeff:
+            return ZERO_LEADING
+        return self.__coeff[-1]
 
     @classmethod
     def coeff_to_str(cls, coeff: list[tuple[TermPower, float]]) -> str:
