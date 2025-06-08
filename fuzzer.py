@@ -6,7 +6,6 @@ from expr import DIGITS, EPS, equals, Expr, Mono, Exp, Scl, Add, Sub, Mul
 from poly_expanded import TermPower, PolyExpanded, ZERO_LEADING
 from asymptotic import asymptotic, Asymptotic
 
-
 type AsymptoticTest = Literal["Tight", "Loose", "Incorrect"]
 
 

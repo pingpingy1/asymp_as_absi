@@ -1,3 +1,4 @@
+"""Parser for function expressions."""
 from expr import Expr, Mono, Exp, Scl, Add, Sub, Mul
 
 TT_VAR: str = "TT_VAR"
@@ -170,7 +171,9 @@ class Parser:
     def parse_float(self) -> str:
         """Parses a float, including negative signs."""
         if not self.curr:
-            raise ValueError(f"Unexpected eof at {self.tokens[-1][2]} (Expected number)")
+            raise ValueError(
+                f"Unexpected eof at {self.tokens[-1][2]} (Expected number)"
+            )
         neg: bool = False
         while self.curr and self.curr[0] == TT_OP and self.curr[1] == "-":
             neg = not neg
@@ -189,7 +192,9 @@ class Parser:
         """Parses the entire expression."""
         expr: Expr = self.parse_expr()
         if self.curr:
-            raise ValueError(f"Unexpected token at {self.curr[2]}: {self.curr[1]} (Expected eof)")
+            raise ValueError(
+                f"Unexpected token at {self.curr[2]}: {self.curr[1]} (Expected eof)"
+            )
         return expr
 
 

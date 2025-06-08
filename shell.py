@@ -14,15 +14,21 @@ def shell_help() -> None:
     print("Commands:")
     print("  help                           - Show this help message")
     print("  exit                           - Exit the shell")
-    print("  eval <expr> at <n>             - Evaluate the expression at the given value")
+    print(
+        "  eval <expr> at <n>             - Evaluate the expression at the given value"
+    )
     print("  analyze <expr>                 - Analyze the expression")
     print("  fuzz <n> <max_depth> [options] - Run fuzzer on the asymptotic analysis")
     print("    n                            - Number of trials to run")
     print("    max_depth                    - Maximum depth of the expression tree")
     print("    -v, --verbose                - Print all trials")
-    print("    --no-top                     - Ignore test cases if analysis results in top")
+    print(
+        "    --no-top                     - Ignore test cases if analysis results in top"
+    )
     print("    --no-exp                     - Do not allow exponential terms")
-    print("    --min-size <size>            - Minimum size of the expression to consider")
+    print(
+        "    --min-size <size>            - Minimum size of the expression to consider"
+    )
     print("    --same-const-prob <p>        - Probability of reusing a constant")
     print("    --close-const-prob <p>       - Probability of perturbating a constant")
     print()

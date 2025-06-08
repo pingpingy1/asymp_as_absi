@@ -107,8 +107,8 @@ class PolyExpanded:
         if not isinstance(other, PolyExpanded):
             return NotImplemented
         res: list[tuple[TermPower, float]] = other.coeff()
-        i: int = 0 # index for res
-        j: int = 0 # index for self.__coeff
+        i: int = 0  # index for res
+        j: int = 0  # index for self.__coeff
         while j < len(self.__coeff):
             while i < len(res) and res[i][0] < self.__coeff[j][0]:
                 i += 1
@@ -127,11 +127,9 @@ class PolyExpanded:
     def __sub__(self, other: object) -> "PolyExpanded":
         if not isinstance(other, PolyExpanded):
             return NotImplemented
-        res: list[tuple[TermPower, float]] = [
-            (t, -c) for t, c in other.coeff()
-        ]
-        i: int = 0 # index for res
-        j: int = 0 # index for self.__coeff
+        res: list[tuple[TermPower, float]] = [(t, -c) for t, c in other.coeff()]
+        i: int = 0  # index for res
+        j: int = 0  # index for self.__coeff
         while j < len(self.__coeff):
             while i < len(res) and res[i][0] < self.__coeff[j][0]:
                 i += 1
@@ -212,7 +210,8 @@ class PolyExpanded:
     def eval(self, n: int) -> float:
         """Evaluate the polynomial at n."""
         return sum(
-            float(c * (2 ** (t.exp_power * n)) * (n**t.deg_power)) for t, c in self.__coeff
+            float(c * (2 ** (t.exp_power * n)) * (n**t.deg_power))
+            for t, c in self.__coeff
         )
 
     def leading_term(self) -> tuple[TermPower, float]:
