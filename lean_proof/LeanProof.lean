@@ -1,1 +1,1 @@
-import LeanProof.Basic
+import LeanProof.Domain
