@@ -4,7 +4,9 @@ Domain definitions for asymptotic analysis
 
 import Mathlib.Tactic
 import Mathlib.Data.Real.Basic
+import Mathlib.Data.EReal.Basic
 import Mathlib.Data.ENNReal.Basic
+import Mathlib.Data.Prod.Basic
 
 open Real
 open ENNReal
@@ -15,6 +17,10 @@ inductive Da
   | bot : Da
   | elem : ℝ≥0∞ × ℝ → Da
   | top : Da
+inductive Dastar
+  | bot : Dastar
+  | elem : EReal × ℝ → Dastar
+  | top : Dastar
 
 namespace Dd
 
@@ -87,3 +93,77 @@ lemma le_trans {f g h : Dd} (hfg : f ⊑d g) (hgh : g ⊑d h) : f ⊑d h := by
       linarith
 
 end Dd
+
+namespace Dc
+
+def le (A B : Dc) : Prop := ∀ f : Dd, A f → B f
+scoped infix:50 " ⊑c " => le
+
+lemma le_refl (A : Dc) : A ⊑c A := by
+  intro f hf
+  exact hf
+
+lemma le_antisymm {A B : Dc} (hAB : A ⊑c B) (hBA : B ⊑c A) : A = B := by
+  apply Set.ext
+  intro f
+  constructor
+  · intro hfA
+    exact hAB f hfA
+  · intro hfB
+    exact hBA f hfB
+
+lemma le_trans {A B C : Dc} (hAB : A ⊑c B) (hBC : B ⊑c C) : A ⊑c C := by
+  intro f hfA
+  apply hBC
+  apply hAB
+  exact hfA
+
+end Dc
+
+namespace Da
+
+def le (a b : Da) : Prop :=
+  match a, b with
+  | bot, _ => True
+  | _, top => True
+  | top, _ => False
+  | _, bot => False
+  | elem (c1, r1), elem (c2, r2) =>
+      (r1 < r2) ∨ (r1 = r2 ∧ c1 ≤ c2)
+scoped infix:50 " ⊑a " => le
+
+lemma le_refl (a : Da) : a ⊑a a := by
+  cases a
+  · trivial
+  · right
+    constructor
+    · rfl
+    · rfl
+  · trivial
+
+lemma le_antisymm {a b : Da} (hab : a ⊑a b) (hba : b ⊑a a) : a = b := by
+  cases a <;> cases b
+  · rfl
+  · trivial
+  · trivial
+  · contradiction
+  · rcases hab with hlt | heq
+    · rcases hba with hlt' | heq'
+      · linarith
+      · linarith
+    · rcases hba with hlt' | heq'
+      · linarith
+      · norm_num
+        rw [Prod.eq_iff_fst_eq_snd_eq]
+        constructor
+        · apply le_antisymm_iff.mpr
+          constructor
+          · exact heq.right
+          · exact heq'.right
+        · exact heq.left
+  · trivial
+  · trivial
+  · trivial
+  · rfl
+
+end Da
