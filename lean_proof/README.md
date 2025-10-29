@@ -1,13 +1,38 @@
-# lean_proof
+# Lean Formalization
 
-## GitHub configuration
+This directory contains the Lean 4 mechanization of the formal framework introduced in the paper.
 
-To set up your new GitHub repository, follow these steps:
+The mechanization serves as a validation of the framework’s formal soundness rather than a full proof development. It defines the semantic domains and orderings used in the paper, and partially formalizes the abstraction–concretization interface.
 
-* Under your repository name, click **Settings**.
-* In the **Actions** section of the sidebar, click "General".
-* Check the box **Allow GitHub Actions to create and approve pull requests**.
-* Click the **Pages** section of the settings sidebar.
-* In the **Source** dropdown menu, select "GitHub Actions".
+---
 
-After following the steps above, you can remove this section from the README file.
+## Structure
+
+- **[`Domain.lean`](LeanProof/Domain.lean)**  
+  Defines the three semantic domains:
+  - *Denotational domain* `Dd`  
+  - *Concrete domain* `Dc`  
+  - *Abstract domain* `Da`  
+  together with their respective ordering relations (`⊑d`, `⊑c`, `⊑a`) and proofs that each forms a preorder/partial order (reflexive, antisymmetric, transitive).
+
+- **[`Galois.lean`](LeanProof/Galois.lean)**  
+  Defines the abstraction (`α`) and concretization (`γ`) functions and states the Galois connection between the concrete and abstract domains.  
+  *(Proof currently under development.)*
+
+- **`Semantics.lean`**  
+  Placeholder for the compositional definition of the concrete and abstract semantics and the proof of correctness for assertion checking.  
+  *(To be implemented.)*
+
+## Notes
+
+- The implementation uses **Mathlib** for analytic constructs (`Sup`, `Inf`, `limsup`, etc.).  
+- The formalization is **noncomputable** in places (e.g., `α`) and focuses on definitional coherence.  
+- Currently verified components include all ordering proofs and the type-correctness of domain definitions.
+
+## Goals
+
+This Lean development aims to:
+1. Validate the internal consistency of the abstract interpretation framework.
+2. Provide a foundation for future mechanized proofs of:
+   - the **Galois connection** between `α` and `γ`, and  
+   - the **soundness of assertion checking**.
